@@ -28,18 +28,29 @@ const App = () => {
 
   const validateForm = () => {
     let formErrors = {};
-    const { dob, phone } = formData;
+    const { username, email, dob, phone } = formData;
 
-    if (!dob || new Date(dob) > new Date()) {
-      formErrors.dob = alert(
-        "Invalid Date of Birth. Date of Birth cannot be in future."
-      );
+    if (!username) {
+      formErrors.username = "⚠️ Username is required.";
     }
 
-    if (!phone || phone.length !== 10 || isNaN(phone)) {
-      formErrors.phone = alert(
-        "Invalid phone number. Please enter a 10-digit phone number."
-      );
+    if (!email) {
+      formErrors.email = "⚠️ Email is required.";
+    } else if (!email.includes("@")) {
+      formErrors.email = "⚠️ Invalid email. Please include '@'.";
+    }
+
+    if (!phone) {
+      formErrors.phone = "⚠️ Phone number is required.";
+    } else if (phone.length !== 10 || isNaN(phone)) {
+      formErrors.phone = "⚠️ Invalid phone number. Must be 10 digits.";
+    }
+
+    if (!dob) {
+      formErrors.dob = "⚠️ Date of Birth is required.";
+    } else if (new Date(dob) > new Date()) {
+      formErrors.dob =
+        "⚠️ Invalid Date of Birth. Date cannot be in the future.";
     }
 
     setErrors(formErrors);
@@ -49,8 +60,8 @@ const App = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validateForm()) {
-      closeModal();
       alert("Form submitted successfully!");
+      setFormData({ username: "", email: "", dob: "", phone: "" });
     }
   };
 
@@ -65,11 +76,7 @@ const App = () => {
       <div className="opener">
         <h1>User Details Modal</h1>
         <div>
-          <button
-            className="button"
-            onClick={openModal}
-            style={{ backgroundColor: "#1384db" }}
-          >
+          <button className="button" onClick={openModal}>
             Open Form
           </button>
         </div>
@@ -88,6 +95,7 @@ const App = () => {
                   onChange={handleInputChange}
                   required
                 />
+                {errors.username && <p className="error">{errors.username}</p>}
               </div>
               <div>
                 <label htmlFor="email">Email:</label>
@@ -98,6 +106,7 @@ const App = () => {
                   onChange={handleInputChange}
                   required
                 />
+                {errors.email && <p className="error">{errors.email}</p>}
               </div>
               <div>
                 <label htmlFor="phone">Phone Number:</label>
@@ -119,7 +128,7 @@ const App = () => {
                 />
                 {errors.dob && <p className="error">{errors.dob}</p>}
               </div>
-              <button type="submit" className="button">
+              <button type="submit" className="submit-button">
                 Submit
               </button>
             </form>
